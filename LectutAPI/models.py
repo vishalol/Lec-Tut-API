@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 class Course(models.Model):
     courseName = models.CharField(max_length=200)
     user = models.ManyToManyField(User, related_name ='courses')
+    def __str__(self):
+        return self.courseName
 
 
 class Post(models.Model):
@@ -13,6 +15,8 @@ class Post(models.Model):
     pub_time = models.DateTimeField(auto_now_add=True)  
     course = models.ForeignKey(Course, related_name='posts', on_delete=models.CASCADE)
     owner = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE) 
+    def __str__(self):
+        return self.post
      
 
 class Comment(models.Model):
@@ -20,3 +24,5 @@ class Comment(models.Model):
     pub_time = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE) 
     post = models.ForeignKey(Post,related_name='comments', on_delete=models.CASCADE)
+    def __str__(self):
+        return self.comment

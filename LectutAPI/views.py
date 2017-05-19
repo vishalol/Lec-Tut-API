@@ -5,7 +5,7 @@ from LectutAPI.models import *
 from LectutAPI.serializers import *
 from rest_framework import generics
 from django.contrib.auth.models import User
-#from snippets.permissions import IsOwnerOrReadOnly
+from LectutAPI.permissions import IsOwnerOrReadOnly
 from rest_framework.reverse import reverse
 from rest_framework import renderers
 
@@ -35,4 +35,32 @@ class CourseList(generics.ListAPIView):
 
 class CourseDetail(generics.RetrieveAPIView):
     queryset = Course.objects.all()
-    serializer_class = CourseSerializer    	
+    serializer_class = CourseSerializer  
+
+class PostList(generics.ListCreateAPIView):
+	queryset = Post.objects.all()
+	serializer_class = PostSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
+
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Post.objects.all()
+	serializer_class = PostSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly,)
+
+class CommentList(generics.ListCreateAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CommentSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
+
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CommentSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly,)	   	
